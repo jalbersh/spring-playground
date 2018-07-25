@@ -1,7 +1,10 @@
 .idea/
 *.iml
 out/
+*.lock
+*.bin
 .git
+.gradle
 .gradle/
 gradlew
 gradle

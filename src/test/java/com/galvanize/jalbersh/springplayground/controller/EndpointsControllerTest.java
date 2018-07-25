@@ -23,14 +23,14 @@ public class EndpointsControllerTest {
 
     @Test
     public void testGetEndpoint() throws Exception {
-        this.mvc.perform(get("/tasks").accept(MediaType.TEXT_PLAIN))
+        this.mvc.perform(get("/math/tasks").accept(MediaType.TEXT_PLAIN))
                 .andExpect(status().isOk())
                 .andExpect(content().string("These are tasks\n"));
     }
 
     @Test
     public void testPostEndpoint() throws Exception {
-        this.mvc.perform(post("/tasks").accept(MediaType.TEXT_PLAIN))
+        this.mvc.perform(post("/math/tasks").accept(MediaType.TEXT_PLAIN))
                 .andExpect(status().isOk())
                 .andExpect(content().string("You just POSTed to /tasks\n"));
     }
