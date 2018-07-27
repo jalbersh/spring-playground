@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -49,5 +50,11 @@ public class EndpointsController {
         Map<String,String[]> params = webRequest.getParameterMap();
         String[] ns = params.get("n");
         return ms.sum(ns);
+    }
+
+    @RequestMapping(value = "/volume/{width}/{length}/{height}", method = POST)
+    public String volume(@PathVariable int width, @PathVariable int length, @PathVariable int height) {
+        System.out.println("in volume");
+        return ms.volume(width,length,height);
     }
 }

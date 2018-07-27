@@ -42,4 +42,8 @@ public class MathService {
         }
         return Double.toString(sum)+"\n";
     }
+
+    public String volume(int width, int length, int height) {
+        return Double.toString(width*length*height)+"\n";
+    }
 }

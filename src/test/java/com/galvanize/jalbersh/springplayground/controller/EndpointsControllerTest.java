@@ -110,4 +110,11 @@ public class EndpointsControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string("15.0\n"));
     }
+
+    @Test
+    public void testMathVolume() throws Exception {
+        this.mvc.perform(post("/math/volume/3/4/5").accept(MediaType.TEXT_PLAIN))
+                .andExpect(status().isOk())
+                .andExpect(content().string("60.0\n"));
+    }
 }

@@ -41,4 +41,9 @@ public class MathServiceTest {
         assert(ms.sum(ns)).equals("15.0\n");
     }
 
+    @Test
+    public void testVolume() throws Exception {
+        assert(ms.volume(3,4,5)).equals("60.0\n");
+    }
+
 }
