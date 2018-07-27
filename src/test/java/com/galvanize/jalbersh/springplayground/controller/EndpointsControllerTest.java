@@ -1,14 +1,23 @@
 package com.galvanize.jalbersh.springplayground.controller;
 
 import com.galvanize.jalbersh.springplayground.controller.EndpointsController;
+import com.galvanize.jalbersh.springplayground.model.OperationData;
+import com.galvanize.jalbersh.springplayground.service.MathService;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.expression.Operation;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static com.galvanize.jalbersh.springplayground.model.OperationDataBuilder.operationDataBuilder;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -16,10 +25,21 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(EndpointsController.class)
+@ContextConfiguration(locations={"classpath:app-context.xml"})
 public class EndpointsControllerTest {
+
+    private EndpointsController ec;
 
     @Autowired
     private MockMvc mvc;
+
+    @Autowired
+    private MathService ms;
+
+    @Before
+    public void setup() throws Exception {
+        ec = new EndpointsController();
+    }
 
     @Test
     public void testGetEndpoint() throws Exception {
@@ -58,7 +78,6 @@ public class EndpointsControllerTest {
 
     @Test
     public void testMathCalculateMultiple() throws Exception {
-
         this.mvc.perform(get("/math/calculate?operation=multiply&x=4&y=6").accept(MediaType.TEXT_PLAIN))
                 .andExpect(status().isOk())
                 .andExpect(content().string("24.0\n"));

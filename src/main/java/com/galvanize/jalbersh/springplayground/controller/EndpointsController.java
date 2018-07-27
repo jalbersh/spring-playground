@@ -3,6 +3,7 @@ package com.galvanize.jalbersh.springplayground.controller;
 import com.galvanize.jalbersh.springplayground.model.OperationData;
 import com.galvanize.jalbersh.springplayground.model.OperationDataBuilder;
 import com.galvanize.jalbersh.springplayground.service.MathService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 
@@ -10,12 +11,15 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.galvanize.jalbersh.springplayground.model.OperationDataBuilder.operationDataBuilder;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
 @RequestMapping("/math")
 public class EndpointsController {
+    @Autowired
+    private MathService ms;
 
     @GetMapping("/tasks")
     public String getTasks() {
@@ -36,14 +40,14 @@ public class EndpointsController {
     public String doCalc(@RequestParam(required = false) String operation,
                          @RequestParam(required = true) String x,
                          @RequestParam(required = true) String y) {
-        OperationData data = new OperationDataBuilder().x(x).y(y).operation(operation).build();
-        return new MathService().calculate(data);
+        OperationData data = operationDataBuilder().x(x).y(y).operation(operation).build();
+        return ms.calculate(data);
     }
 
     @RequestMapping(value = "/sum", method = POST)
     public String sum(WebRequest webRequest) {
         Map<String,String[]> params = webRequest.getParameterMap();
         String[] ns = params.get("n");
-        return new MathService().sum(ns);
+        return ms.sum(ns);
     }
 }

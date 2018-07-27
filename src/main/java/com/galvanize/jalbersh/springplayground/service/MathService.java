@@ -5,23 +5,33 @@ import org.springframework.stereotype.Service;
 
 import java.util.Map;
 
-@Service("mathService")
+@Service
 public class MathService {
     public String calculate(OperationData data) {
         double x = 0.0;
         double y = 0.0;
-        try {
-            x = Double.parseDouble(data.getX());
-            y = Double.parseDouble(data.getY());
-        } catch (NumberFormatException e) {
-            System.err.println("parsing problem encountered: "+e.getMessage());
-        }
-        switch(data.getOperation()) {
-            case "add": return Double.toString(x+y)+"\n";
-            case "subtract": return Double.toString(x-y)+"\n";
-            case "multiply": return Double.toString(x*y)+"\n";
-            case "divide": return Double.toString(x/y)+"\n";
-            default: return Double.toString(x+y)+"\n";
+        if (data != null) {
+            try {
+                x = Double.parseDouble(data.getX());
+                y = Double.parseDouble(data.getY());
+            } catch (NumberFormatException e) {
+                System.err.println("parsing problem encountered: " + e.getMessage());
+            }
+            switch (data.getOperation()) {
+                case "add":
+                    return Double.toString(x + y) + "\n";
+                case "subtract":
+                    return Double.toString(x - y) + "\n";
+                case "multiply":
+                    return Double.toString(x * y) + "\n";
+                case "divide":
+                    return Double.toString(x / y) + "\n";
+                default:
+                    return Double.toString(x + y) + "\n";
+            }
+        } else {
+            System.err.println("operation data was null");
+            return "0.0";
         }
     }
 

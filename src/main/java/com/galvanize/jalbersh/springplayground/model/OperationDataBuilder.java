@@ -8,6 +8,10 @@ public class OperationDataBuilder {
 
     public OperationDataBuilder() {}
 
+    public static OperationDataBuilder operationDataBuilder() {
+        return new OperationDataBuilder();
+    }
+
     public OperationDataBuilder operation(String operation) {
         if (operation != null) {
             if (operation.equals("null")) {

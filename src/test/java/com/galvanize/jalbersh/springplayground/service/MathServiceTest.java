@@ -24,7 +24,7 @@ public class MathServiceTest {
     MathService ms;
 
     @Before
-    public void setup() {
+    public void setup() throws Exception {
         ms = new MathService();
     }
 
