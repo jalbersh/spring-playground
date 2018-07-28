@@ -46,4 +46,19 @@ public class MathService {
     public String volume(int width, int length, int height) {
         return Double.toString(width*length*height)+"\n";
     }
+
+    public String area(String type, int width, int height, int radius) {
+        System.out.println("in area with type="+type+";width="+width+";height="+height+";radius="+radius);
+        if (!type.toLowerCase().equals("circle")) {
+            // its a rectangle
+            if (radius > 0) {
+                return "Invalid";
+            }
+            return String.valueOf(width*height);
+        } else {
+            // its a circle
+            if (width > 0 || height > 0) return "Invalid";
+            return String.valueOf(Math.PI*Math.pow(radius,2.0));
+        }
+    }
 }

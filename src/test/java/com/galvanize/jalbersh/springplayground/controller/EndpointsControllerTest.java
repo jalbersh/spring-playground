@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 import static com.galvanize.jalbersh.springplayground.model.OperationDataBuilder.operationDataBuilder;
 import static org.mockito.ArgumentMatchers.any;
@@ -113,8 +114,45 @@ public class EndpointsControllerTest {
 
     @Test
     public void testMathVolume() throws Exception {
-        this.mvc.perform(post("/math/volume/3/4/5").accept(MediaType.TEXT_PLAIN))
+        this.mvc.perform(get("/math/volume/3/4/5").accept(MediaType.TEXT_PLAIN))
                 .andExpect(status().isOk())
                 .andExpect(content().string("60.0\n"));
+    }
+
+//    @Test
+    public void testMathAreaCircleWithPlainFormData() throws Exception {
+        MockHttpServletRequestBuilder request1 = post("/math/area")
+                .accept(MediaType.TEXT_PLAIN)
+                .param("type", "rectangle")
+                .param("width", "3")
+                .param("height", "4");
+        this.mvc.perform(request1)
+                .andExpect(status().isOk())
+                .andExpect(content().string("12"));
+    }
+
+//    @Test
+    public void testMathAreaCircleWithFormData() throws Exception {
+        MockHttpServletRequestBuilder request1 = post("/math/area")
+                .accept(MediaType.APPLICATION_FORM_URLENCODED)
+                .param("type", "circle")
+                .param("width", "3")
+                .param("height", "4");
+        this.mvc.perform(request1)
+                .andExpect(status().isOk())
+                .andExpect(content().string(Double.toString(Math.PI*Math.pow(4.0,2.0))));
+    }
+
+//    @Test
+    public void testMathAreaRectangleWithFormData() throws Exception {
+        MockHttpServletRequestBuilder request1 = post("/math/area")
+                .accept(MediaType.APPLICATION_FORM_URLENCODED)
+                .param("type", "circle")
+                .param("width", "3")
+                .param("height", "4");
+        this.mvc.perform(request1)
+                .andExpect(status().isOk())
+                .andExpect(content().string(String.valueOf(Math.PI*Math.pow(4.0,2.0))));
+
     }
 }

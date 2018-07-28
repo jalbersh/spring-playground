@@ -46,4 +46,22 @@ public class MathServiceTest {
         assert(ms.volume(3,4,5)).equals("60.0\n");
     }
 
-}
+    @Test
+    public void testAreaRectangle() throws Exception {
+        assert(ms.area("rectangle", 4, 5, 0).equals("20"));
+    }
+
+    @Test
+    public void testAreaCircle() throws Exception {
+        assert(ms.area("circle", 0, 0, 3).equals(String.valueOf(Math.PI*Math.pow(3.0,2.0))));
+    }
+
+    @Test
+    public void testAreaInvalidRectangle() throws Exception {
+        assert(ms.area("rectangle", 0, 0, 3).equals("Invalid"));
+    }
+
+    @Test
+    public void testAreaInvalidCircle() throws Exception {
+        assert(ms.area("circle", 3, 4, 5).equals("Invalid"));
+    }}
