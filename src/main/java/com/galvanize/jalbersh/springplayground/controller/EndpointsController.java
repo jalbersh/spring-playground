@@ -1,45 +1,49 @@
 package com.galvanize.jalbersh.springplayground.controller;
 
+import com.galvanize.jalbersh.springplayground.model.Flight;
 import com.galvanize.jalbersh.springplayground.model.OperationData;
 import com.galvanize.jalbersh.springplayground.model.OperationDataBuilder;
+import com.galvanize.jalbersh.springplayground.model.Ticket;
 import com.galvanize.jalbersh.springplayground.service.MathService;
+import com.galvanize.jalbersh.springplayground.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.galvanize.jalbersh.springplayground.model.OperationDataBuilder.operationDataBuilder;
+import static java.util.Arrays.asList;
 import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
-@RequestMapping("/math")
 public class EndpointsController {
     @Autowired
     private MathService ms;
 
-    @GetMapping("/tasks")
+    @Autowired
+    private TicketService ts;
+
+    @GetMapping("/math/tasks")
     public String getTasks() {
         return "These are tasks\n";
     }
 
-    @PostMapping("/tasks")
+    @PostMapping("/math/tasks")
     public String createTask() {
         return "You just POSTed to /tasks\n";
     }
 
-    @GetMapping("/pi")
+    @GetMapping("/math/pi")
     public String getPi() {
         return Math.PI+"\n";
     }
 
-    @RequestMapping(value = "/calculate", method = GET)
+    @RequestMapping(value = "/math/calculate", method = GET)
     public String doCalc(@RequestParam(required = false) String operation,
                          @RequestParam(required = true) String x,
                          @RequestParam(required = true) String y) {
@@ -47,29 +51,44 @@ public class EndpointsController {
         return ms.calculate(data);
     }
 
-    @RequestMapping(value = "/sum", method = POST)
+    @RequestMapping(value = "/math/sum", method = POST)
     public String sum(WebRequest webRequest) {
         Map<String,String[]> params = webRequest.getParameterMap();
         String[] ns = params.get("n");
         return ms.sum(ns);
     }
 
-    @RequestMapping(value = "/volume/{width}/{length}/{height}", method = GET)
+    @RequestMapping(value = "/math/volume/{width}/{length}/{height}", method = GET)
     public String volume(@PathVariable int width, @PathVariable int length, @PathVariable int height) {
         return ms.volume(width,length,height);
     }
 
-    @PostMapping(value = "/area", consumes = MediaType.TEXT_PLAIN_VALUE)
+    @PostMapping(value = "/math/area", consumes = MediaType.TEXT_PLAIN_VALUE)
     public String areaPlain(@PathVariable String type, @PathVariable int width, @PathVariable int height, @PathVariable int radius) {
         return ms.area(type,width,height,radius);
     }
 
-    @PostMapping(value = "/area", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @PostMapping(value = "/math/area", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public String area(@RequestParam Map<String, String> formData) {
         int width=Integer.parseInt(formData.get("width") != null ? formData.get("width") : "0");
         int height=Integer.parseInt(formData.get("height") != null ? formData.get("height") : "0");
         int radius=Integer.parseInt(formData.get("radius") != null ? formData.get("radius") : "0");
         String type=formData.get("type");
         return ms.area(type,width,height,radius);
+    }
+
+    @GetMapping(value = "/flights/flight", produces = "application/json")
+    public Flight getSingleFlight() {
+        return ts.getFlight();
+    }
+
+    @GetMapping(value = "/flights", produces = "application/json")
+    public List<Flight> getFlights() {
+        return ts.getFlights();
+    }
+
+    @PostMapping(value = "/flights/tickets/total", produces = "application/json")
+    public String getTotalCost() {
+        return null;
     }
 }

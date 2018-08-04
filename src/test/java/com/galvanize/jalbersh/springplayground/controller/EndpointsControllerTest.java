@@ -3,6 +3,7 @@ package com.galvanize.jalbersh.springplayground.controller;
 import com.galvanize.jalbersh.springplayground.controller.EndpointsController;
 import com.galvanize.jalbersh.springplayground.model.OperationData;
 import com.galvanize.jalbersh.springplayground.service.MathService;
+import org.assertj.core.internal.bytebuddy.matcher.ElementMatcher;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,8 +17,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
-import static com.galvanize.jalbersh.springplayground.model.OperationDataBuilder.operationDataBuilder;
+import static org.hamcrest.Matchers.is;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -155,4 +160,67 @@ public class EndpointsControllerTest {
                 .andExpect(content().string(String.valueOf(Math.PI*Math.pow(4.0,2.0))));
 
     }
+
+    @Test
+    public void testSingleFlight() throws Exception {
+        this.mvc.perform(
+                get("/flights/flight")
+                        .accept(MediaType.APPLICATION_JSON_UTF8)
+                        .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(jsonPath("$.tickets[0].passenger.FirstName", is("Dwayne")))
+                .andExpect(jsonPath("$.tickets[0].passenger.LastName", is("Johnson")));
+    }
+
+    @Test
+    public void testFlight1() throws Exception {
+        this.mvc.perform(
+                get("/flights/flight")
+                        .accept(MediaType.APPLICATION_JSON_UTF8)
+                        .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(jsonPath("$.tickets[0].passenger.FirstName", is("Dwayne")))
+                .andExpect(jsonPath("$.tickets[0].passenger.LastName", is("Johnson")));
+    }
+
+    @Test
+    public void testFlight2() throws Exception {
+        this.mvc.perform(
+                get("/flights/flight")
+                        .accept(MediaType.APPLICATION_JSON_UTF8)
+                        .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(jsonPath("$.tickets[0].passenger.FirstName", is("Dwayne")));
+    }
+
+    @Test
+    public void testFlights() throws Exception {
+        this.mvc.perform(
+                get("/flights")
+                        .accept(MediaType.APPLICATION_JSON_UTF8)
+                        .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(jsonPath("$.[0].tickets[0].passenger.FirstName", is("Dwayne")))
+                .andExpect(jsonPath("$.[1].tickets[1].passenger.FirstName", is("John")))
+                .andExpect(jsonPath("$.[1].tickets[2].passenger.FirstName", is("The Rock")));
+    }
+
+    /*
+    /flights/tickets/total
+     */
+//    @Test
+    public void testCalculateTotalCost() throws Exception {
+        this.mvc.perform(
+                post("/flights/tickets/total")
+                        .accept(MediaType.APPLICATION_JSON_UTF8)
+                        .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.firstName", is("Dwayne")))
+                .andExpect(jsonPath("$.lastName", is("Johnson")));
+    }
+
 }
