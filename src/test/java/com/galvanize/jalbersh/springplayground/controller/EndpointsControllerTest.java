@@ -1,8 +1,15 @@
 package com.galvanize.jalbersh.springplayground.controller;
 
+import com.fasterxml.classmate.util.ResolvedTypeCache;
+import com.fasterxml.jackson.annotation.JacksonInject;
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.galvanize.jalbersh.springplayground.controller.EndpointsController;
 import com.galvanize.jalbersh.springplayground.model.OperationData;
+import com.galvanize.jalbersh.springplayground.model.Passenger;
+import com.galvanize.jalbersh.springplayground.model.Ticket;
 import com.galvanize.jalbersh.springplayground.service.MathService;
+import com.galvanize.jalbersh.springplayground.service.TicketService;
 import org.assertj.core.internal.bytebuddy.matcher.ElementMatcher;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,6 +24,13 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.stream.Stream;
+
+import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -41,6 +55,9 @@ public class EndpointsControllerTest {
 
     @Autowired
     private MathService ms;
+
+    @Autowired
+    private TicketService ts;
 
     @Before
     public void setup() throws Exception {
@@ -209,18 +226,63 @@ public class EndpointsControllerTest {
                 .andExpect(jsonPath("$.[1].tickets[2].passenger.FirstName", is("The Rock")));
     }
 
-    /*
-    /flights/tickets/total
-     */
-//    @Test
-    public void testCalculateTotalCost() throws Exception {
-        this.mvc.perform(
-                post("/flights/tickets/total")
-                        .accept(MediaType.APPLICATION_JSON_UTF8)
-                        .contentType(MediaType.APPLICATION_JSON_UTF8))
+    @Test
+    public void testSumTicketsJsonAsString() throws Exception {
+        String json = "[{\"passenger\": {\"FirstName\": \"Some name\", \"LastName\": \"Some other name\"}, \"price\": 200}, {\"passenger\": {\"FirstName\": \"Name B\", \"LastName\": \"Name C\"}, \"price\": 150}]";
+        MockHttpServletRequestBuilder request = post("/flights/tickets/total")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json);
+        this.mvc.perform(request)
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.firstName", is("Dwayne")))
-                .andExpect(jsonPath("$.lastName", is("Johnson")));
+                .andExpect(content().string("result: 350.0"));
     }
 
+    @Test
+    public void testSumTicketsFromFile() throws Exception {
+//        String json = "[{\"passenger\": {\"FirstName\": \"Some name\", \"LastName\": \"Some other name\"}, \"price\": 200}, {\"passenger\": {\"FirstName\": \"Name B\", \"LastName\": \"Name C\"}, \"price\": 150}]";
+        String json = getJSON("/data.json");
+        MockHttpServletRequestBuilder request = post("/flights/tickets/total")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json);
+        this.mvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(content().string("result: 600.0"));
+    }
+
+    private String getJSON(String path) throws Exception {
+        URL url = this.getClass().getResource(path);
+        return new String(Files.readAllBytes(Paths.get(url.getFile())));
+    }
+
+    @Test
+    public void testSumTicketsFromJacksonObjectToString() throws Exception {
+        ObjectMapper jmap = new ObjectMapper();
+        Passenger passenger1 = new Passenger("Dwayne","Johnson");
+        Passenger passenger2 = new Passenger("John","Cena");
+        Passenger passenger3 = new Passenger("The Rock",null);
+        Ticket ticket1 = new Ticket(passenger1,200.0);
+        Ticket ticket2 = new Ticket(passenger2,180.0);
+        Ticket ticket3 = new Ticket(passenger3,160.0);
+        Ticket[] tickets = Stream.of(ticket1,ticket2,ticket3).toArray(Ticket[]::new);
+        // Convert Array to JSON
+        String json = jmap.writeValueAsString(tickets);
+//        json from map=[{"passenger":{"FirstName":"Dwayne","LastName":"Johnson"},"price":200.0},{"passenger":{"FirstName":"John","LastName":"Cena"},"price":180.0},{"passenger":{"FirstName":"The Rock"},"price":160.0}]
+        MockHttpServletRequestBuilder request = post("/flights/tickets/total")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json);
+        this.mvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(content().string("result: 540.0"));
+    }
+
+    @Test
+    public void testObjectParams() throws Exception {
+        MockHttpServletRequestBuilder request = post("/jr/object-example")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"q\": \"other\", \"from\": \"2010\"}");
+
+        this.mvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(content().string("Search: q=something from=2008"));
+    }
 }

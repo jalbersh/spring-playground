@@ -8,6 +8,8 @@ public class Ticket {
     private @JsonProperty("passenger") Passenger passenger;
     private @JsonProperty("price") Double price;
 
+    public Ticket() {}
+
     public Ticket(Passenger passenger, Double price) {
         this.passenger = passenger;
         this.price = price;

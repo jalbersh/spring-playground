@@ -87,8 +87,14 @@ public class EndpointsController {
         return ts.getFlights();
     }
 
-    @PostMapping(value = "/flights/tickets/total", produces = "application/json")
-    public String getTotalCost() {
-        return null;
+    @PostMapping(value = "/jr/object-example", produces = "application/json")
+    public String getObjectParams() {
+        return "Search: q=something from=2008";
     }
+
+    @PostMapping(value = "/flights/tickets/total", consumes = "application/json")
+    public String sumTotalTickets(@RequestBody List<Ticket> tickets) {
+        return ts.sumTickets(tickets);
+    }
+
 }

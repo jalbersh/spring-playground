@@ -11,6 +11,8 @@ public class Flight {
     private @JsonProperty("departs") Date departs;
     private @JsonProperty("tickets") List<Ticket> tickets;
 
+    public Flight () {}
+
     public Flight(Date departs, List<Ticket> tickets) {
         this.departs = departs;
         this.tickets = tickets;

@@ -10,6 +10,8 @@ public class Passenger {
     private @JsonProperty("FirstName") String firstName;
     private @JsonProperty("LastName") String lastName;
 
+    public Passenger() {}
+
     public Passenger(String firstName, String lastName) {
         this.firstName = firstName;
         this.lastName = lastName;

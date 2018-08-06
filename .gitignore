@@ -8,3 +8,4 @@ out/
 .gradle/
 gradlew
 gradle
+.DS_store

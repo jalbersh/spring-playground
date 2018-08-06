@@ -39,4 +39,12 @@ public class TicketService {
         return asList(flight1,flight2);
     }
 
+    public String sumTickets(List<Ticket> tickets) {
+        System.out.println("got tickets="+tickets.toString());
+        double sum = 0.0;
+        for (Ticket ticket:tickets) {
+            sum += ticket.getPrice();
+        }
+        return "result: "+String.valueOf(sum);
+    }
 }
