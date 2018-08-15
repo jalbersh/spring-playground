@@ -25,7 +25,7 @@ public class LessonsController {
 
     @GetMapping("/5")
     public Optional<Lesson> get5() {
-        return this.repository.findById(5l);
+        return this.repository.findById(5L);
     }
 
     @PostMapping("")
