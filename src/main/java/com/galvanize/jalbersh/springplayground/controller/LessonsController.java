@@ -7,6 +7,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
+import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
+
 @RestController
 @RequestMapping("/lessons")
 public class LessonsController {
@@ -18,17 +22,20 @@ public class LessonsController {
         this.repository = repository;
     }
 
-    @GetMapping("")
+    @RequestMapping(value = "", method = GET)
     public Iterable<Lesson> all() {
         return this.repository.findAll();
     }
 
-    @GetMapping("/5")
+    @RequestMapping(value = "/5", method = GET)
     public Optional<Lesson> get5() {
         return this.repository.findById(5L);
     }
 
-    @PostMapping("")
+    @RequestMapping(value = "/5", method = DELETE)
+    public void delete5() { this.repository.deleteById(5L); }
+
+    @RequestMapping(value = "", method = POST)
     public Lesson create(@RequestBody Lesson lesson) {
         return this.repository.save(lesson);
     }
