@@ -16,6 +16,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Calendar;
+
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -41,10 +43,12 @@ public class LessonsControllerTest {
         Lesson lesson = new Lesson();
         lesson.setId(5L);
         lesson.setTitle("JPL");
+        lesson.setDeliveredOn(Calendar.getInstance().getTime());
         repository.save(lesson);
         lesson = new Lesson();
         lesson.setId(6L);
         lesson.setTitle("Another Lesson");
+        lesson.setDeliveredOn(Calendar.getInstance().getTime());
         repository.save(lesson);
     }
 
@@ -79,6 +83,7 @@ public class LessonsControllerTest {
         Lesson lesson = new Lesson();
         lesson.setId(6L);
         lesson.setTitle("Another Lesson");
+        lesson.setDeliveredOn(Calendar.getInstance().getTime());
         repository.save(lesson);
 
         MockHttpServletRequestBuilder request = get("/lesson");

@@ -5,13 +5,13 @@ import com.galvanize.jalbersh.springplayground.repository.LessonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
+import java.util.Calendar;
 import java.util.Optional;
 
-import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
-
 import java.util.Optional;
+
+import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @RestController
 @RequestMapping("/lessons")
@@ -42,6 +42,32 @@ public class LessonsController {
         return this.repository.save(lesson);
     }
 
+    @RequestMapping(value = "/5", method = POST)
+    public Lesson create5() {
+        Lesson lesson = new Lesson();
+        lesson.setId(5L);
+        lesson.setTitle("JPL");
+        lesson.setDeliveredOn(Calendar.getInstance().getTime());
+        return this.repository.save(lesson);
+    }
+
+    @RequestMapping(value = "/{id}", method = GET)
+    public Lesson getId(@PathVariable long id) {
+        Lesson lesson = new Lesson();
+        lesson.setId(id);
+        lesson.setTitle("JPL");
+        lesson.setDeliveredOn(Calendar.getInstance().getTime());
+        return this.repository.save(lesson);
+    }
+
+    @RequestMapping(value = "/{id}", method = POST)
+    public Lesson createId(@PathVariable long id) {
+        Lesson lesson = new Lesson();
+        lesson.setId(id);
+        lesson.setTitle("JPL");
+        lesson.setDeliveredOn(Calendar.getInstance().getTime());
+        return this.repository.save(lesson);
+    }
 }
 
 /*
