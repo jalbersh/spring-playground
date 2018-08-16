@@ -18,11 +18,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Calendar;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNot.not;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -56,18 +56,25 @@ public class LessonsControllerTest {
     @Transactional
     @Rollback
     public void testDelete() throws Exception {
-        MockHttpServletRequestBuilder request = delete("/lesson/5");
-
+        Lesson lesson = new Lesson();
+        lesson.setTitle("JPL");
+        lesson.setDeliveredOn(Calendar.getInstance().getTime());
+        lesson = repository.save(lesson);
+        long count = repository.count();
+        System.out.println("old count was "+count);
+        MockHttpServletRequestBuilder request = delete("/lessons/"+lesson.getId());
         this.mvc.perform(request)
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", instanceOf(Number.class) ));
+                .andExpect(status().isOk());
+        long newCount = repository.count();
+        System.out.println("new count was "+newCount);
+        assertThat((count-1),equalTo(newCount));
     }
 
     @Test
     @Transactional
     @Rollback
     public void testCreate() throws Exception {
-        MockHttpServletRequestBuilder request = post("/lesson")
+        MockHttpServletRequestBuilder request = post("/lessons")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"title\": \"Another Lesson\"}");
 
@@ -84,12 +91,28 @@ public class LessonsControllerTest {
         lesson.setId(6L);
         lesson.setTitle("Another Lesson");
         lesson.setDeliveredOn(Calendar.getInstance().getTime());
-        repository.save(lesson);
+        lesson = repository.save(lesson);
 
-        MockHttpServletRequestBuilder request = get("/lesson");
+        MockHttpServletRequestBuilder request = get("/lessons");
 
         this.mvc.perform(request)
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id", equalTo(lesson.getId().intValue()) ));
+                .andExpect(jsonPath("$[0].id", instanceOf(Number.class) ));
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void testUpdate() throws Exception {
+        Lesson lesson = new Lesson();
+        lesson.setTitle("Another Lesson");
+        lesson.setDeliveredOn(Calendar.getInstance().getTime());
+        Lesson savedLesson = repository.save(lesson);
+
+        MockHttpServletRequestBuilder request = patch("/lessons/"+savedLesson.getId());
+
+        this.mvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", not(savedLesson.getId())));
     }
 }

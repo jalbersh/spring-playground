@@ -24,25 +24,28 @@ public class LessonsController {
         this.repository = repository;
     }
 
-    @RequestMapping(value = "", method = GET)
+    @RequestMapping(value = "", method = GET, produces = "application/json")
     public Iterable<Lesson> all() {
         return this.repository.findAll();
     }
 
-    @RequestMapping(value = "/5", method = GET)
+    @RequestMapping(value = "/5", method = GET, produces = "application/json")
     public Optional<Lesson> get5() {
         return this.repository.findById(5L);
     }
 
-    @RequestMapping(value = "/5", method = DELETE)
-    public void delete5() { this.repository.deleteById(5L); }
+    @RequestMapping(value = "/{id}", method = DELETE)
+    public void delete(@PathVariable long id) {
+        System.out.println("delete path param id="+id);
+        this.repository.deleteById(id);
+    }
 
-    @RequestMapping(value = "", method = POST, consumes = "application/json")
+    @RequestMapping(value = "", method = POST, consumes = "application/json", produces = "application/json")
     public Lesson create(@RequestBody Lesson lesson) {
         return this.repository.save(lesson);
     }
 
-    @RequestMapping(value = "/5", method = POST)
+    @RequestMapping(value = "/5", method = POST, produces = "application/json")
     public Lesson create5() {
         Lesson lesson = new Lesson();
         lesson.setId(5L);
@@ -51,7 +54,7 @@ public class LessonsController {
         return this.repository.save(lesson);
     }
 
-    @RequestMapping(value = "/{id}", method = GET)
+    @RequestMapping(value = "/{id}", method = GET, produces = "application/json")
     public Lesson getId(@PathVariable long id) {
         Lesson lesson = new Lesson();
         lesson.setId(id);
@@ -60,13 +63,27 @@ public class LessonsController {
         return this.repository.save(lesson);
     }
 
-    @RequestMapping(value = "/{id}", method = POST)
+    @RequestMapping(value = "/{id}", method = POST, produces = "application/json")
     public Lesson createId(@PathVariable long id) {
         Lesson lesson = new Lesson();
         lesson.setId(id);
         lesson.setTitle("JPL");
         lesson.setDeliveredOn(Calendar.getInstance().getTime());
         return this.repository.save(lesson);
+    }
+
+    @RequestMapping(value = "/{id}", method = PATCH, produces = "application/json")
+    public Lesson updateId(@PathVariable long id) {
+        System.out.println("path param id="+id);
+        Lesson lesson = this.repository.findById(id).orElse(new Lesson(id,"JPL",Calendar.getInstance().getTime()));
+        this.repository.save(lesson);
+        lesson.setId(5L);
+        return this.repository.save(lesson);
+    }
+
+    @RequestMapping(value = "/count", method = GET, produces = "application/json")
+    public long getCount() {
+        return this.repository.count();
     }
 }
 
