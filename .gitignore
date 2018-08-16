@@ -6,7 +6,14 @@ out/
 .git
 .gradle
 .gradle/
+.gradle/4.8.1/
+.gradle/buildOutputCleanup/
 gradlew
 gradle
 .DS_store
 build/
+build/resources/main/
+src/main/resources/application.properties
+src/test/resources/application.properties
+src/main/resources/application.yml
+src/test/resources/application.yml
