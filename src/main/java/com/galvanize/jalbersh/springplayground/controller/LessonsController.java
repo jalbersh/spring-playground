@@ -11,6 +11,8 @@ import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/lessons")
 public class LessonsController {
@@ -35,7 +37,7 @@ public class LessonsController {
     @RequestMapping(value = "/5", method = DELETE)
     public void delete5() { this.repository.deleteById(5L); }
 
-    @RequestMapping(value = "", method = POST)
+    @RequestMapping(value = "", method = POST, consumes = "application/json")
     public Lesson create(@RequestBody Lesson lesson) {
         return this.repository.save(lesson);
     }
