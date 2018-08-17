@@ -2,6 +2,7 @@ package com.galvanize.jalbersh.springplayground.controller;
 
 import com.galvanize.jalbersh.springplayground.model.Lesson;
 import com.galvanize.jalbersh.springplayground.repository.LessonRepository;
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -114,5 +115,23 @@ public class LessonsControllerTest {
         this.mvc.perform(request)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", not(savedLesson.getId())));
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void testFindByTitle() throws Exception {
+        Lesson lesson = new Lesson();
+        lesson.setTitle("Another Lesson to find");
+        lesson.setDeliveredOn(Calendar.getInstance().getTime());
+        Lesson savedLesson = repository.save(lesson);
+
+        MockHttpServletRequestBuilder request = get("/lessons/find/"+savedLesson.getTitle());
+
+        this.mvc.perform(request)
+                .andExpect(status().isOk());
+//                .andExpect(jsonPath("$.data.lessons").isArray()) // works
+//                .andExpect((jsonPath("$.data.lessons", Matchers.contains("Another Lesson to find"))));
+//                .andExpect("$.data.lessons[?(@=='%s')]", lesson.getTitle()).exists());
     }
 }

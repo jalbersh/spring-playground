@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Optional;
 
 import java.util.Optional;
@@ -61,6 +62,13 @@ public class LessonsController {
         lesson.setTitle("JPL");
         lesson.setDeliveredOn(Calendar.getInstance().getTime());
         return this.repository.save(lesson);
+    }
+
+    @RequestMapping(value = "/find/{title}", method = GET, produces = "application/json")
+    public List<Lesson> getByTitle(@PathVariable String title) {
+        List<Lesson> lessons = repository.findByTitle(title);
+        System.out.println("lessons="+lessons);
+        return lessons;
     }
 
     @RequestMapping(value = "/{id}", method = POST, produces = "application/json")
