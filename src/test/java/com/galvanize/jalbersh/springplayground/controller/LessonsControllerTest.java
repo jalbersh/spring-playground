@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Calendar;
+import java.util.Date;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -127,6 +128,39 @@ public class LessonsControllerTest {
         Lesson savedLesson = repository.save(lesson);
 
         MockHttpServletRequestBuilder request = get("/lessons/find/"+savedLesson.getTitle());
+
+        this.mvc.perform(request)
+                .andExpect(status().isOk());
+//                .andExpect(jsonPath("$.data.lessons").isArray()) // works
+//                .andExpect((jsonPath("$.data.lessons", Matchers.contains("Another Lesson to find"))));
+//                .andExpect("$.data.lessons[?(@=='%s')]", lesson.getTitle()).exists());
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void testFindBetween() throws Exception {
+        Lesson lesson1 = new Lesson();
+        lesson1.setTitle("Another Lesson with date1");
+        Calendar cal1 = Calendar.getInstance();
+        cal1.set(2018,6,2);
+        Date date1 = cal1.getTime();
+        lesson1.setDeliveredOn(date1);
+        Lesson savedLesson1 = repository.save(lesson1);
+        Lesson lesson2 = new Lesson();
+        lesson2.setTitle("Another Lesson with date1");
+        Calendar cal2 = Calendar.getInstance();
+        cal2.set(2018,6,9);
+        Date date2 = cal2.getTime();
+        lesson2.setDeliveredOn(date2);
+        Lesson savedLesson2 = repository.save(lesson2);
+
+        cal1.set(2018,6,1);
+        date1 = cal1.getTime();
+        cal2.set(2018,6,30);
+        date2 = cal2.getTime();
+
+        MockHttpServletRequestBuilder request = get("/lessons/between?"+date1+"&"+date2);
 
         this.mvc.perform(request)
                 .andExpect(status().isOk());

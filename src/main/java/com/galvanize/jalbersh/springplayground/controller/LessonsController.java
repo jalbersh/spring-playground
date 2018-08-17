@@ -5,10 +5,11 @@ import com.galvanize.jalbersh.springplayground.repository.LessonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Optional;
+import java.time.LocalDateTime;
+import java.util.*;
 
 import java.util.Optional;
 
@@ -67,6 +68,26 @@ public class LessonsController {
     @RequestMapping(value = "/find/{title}", method = GET, produces = "application/json")
     public List<Lesson> getByTitle(@PathVariable String title) {
         List<Lesson> lessons = repository.findByTitle(title);
+        System.out.println("lessons="+lessons);
+        return lessons;
+    }
+
+    @RequestMapping(value = "/between?{date1}&{date2}", method = GET, produces = "application/json")
+    public List<Lesson> getBetween(@PathVariable Date date1, @PathVariable Date date2) throws Exception {
+//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-M-dd");
+//        long date1 = 0;
+//        long date2 = 0;
+//        try {
+//            date1 = sdf.parse(date1str).getTime();
+//            date2 = sdf.parse(date2str).getTime();
+//        } catch (ParseException pe) {
+//            System.out.println("ParseException caught: "+pe.getMessage());
+//            return null;
+//        } catch (NumberFormatException nfe) {
+//            System.out.println("ParseException caught: "+nfe.getMessage());
+//            return null;
+//        }
+        List<Lesson> lessons = repository.findByDeliveredOnBetween(date1,date2);
         System.out.println("lessons="+lessons);
         return lessons;
     }
