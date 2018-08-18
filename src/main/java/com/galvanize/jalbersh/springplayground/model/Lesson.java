@@ -1,6 +1,7 @@
 package com.galvanize.jalbersh.springplayground.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.beans.factory.annotation.Value;
 
 import javax.persistence.*;
 
@@ -13,8 +14,9 @@ public class Lesson {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
-    @Column(columnDefinition = "date")
+//    @Column(columnDefinition = "date")
     @JsonFormat(pattern = "yyyy-MM-dd")
+//    @Temporal(TemporalType.DATE)
     private Date deliveredOn;
 
     public Lesson() {

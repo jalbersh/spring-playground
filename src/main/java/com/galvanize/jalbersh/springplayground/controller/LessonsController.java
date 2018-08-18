@@ -3,16 +3,23 @@ package com.galvanize.jalbersh.springplayground.controller;
 import com.galvanize.jalbersh.springplayground.model.Lesson;
 import com.galvanize.jalbersh.springplayground.repository.LessonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TemporalType;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import java.util.Optional;
 
+import static java.util.stream.Collectors.toList;
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @RestController
@@ -24,16 +31,6 @@ public class LessonsController {
     @Autowired
     public LessonsController(LessonRepository repository) {
         this.repository = repository;
-    }
-
-    @RequestMapping(value = "", method = GET, produces = "application/json")
-    public Iterable<Lesson> all() {
-        return this.repository.findAll();
-    }
-
-    @RequestMapping(value = "/5", method = GET, produces = "application/json")
-    public Optional<Lesson> get5() {
-        return this.repository.findById(5L);
     }
 
     @RequestMapping(value = "/{id}", method = DELETE)
@@ -56,39 +53,26 @@ public class LessonsController {
         return this.repository.save(lesson);
     }
 
-    @RequestMapping(value = "/{id}", method = GET, produces = "application/json")
-    public Lesson getId(@PathVariable long id) {
-        Lesson lesson = new Lesson();
-        lesson.setId(id);
-        lesson.setTitle("JPL");
-        lesson.setDeliveredOn(Calendar.getInstance().getTime());
-        return this.repository.save(lesson);
-    }
+    @RequestMapping(value = "/between?{date1}&{date2}", method = RequestMethod.GET,
+            consumes = "application/json", produces = "application/json")
+    public List<Lesson> getBetween(@PathVariable String date1str, @PathVariable String date2str) throws Exception {
+        System.out.println("in getBetween: got date1str="+date1str+" and date2str="+date2str);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-M-dd");
+        Date date1 = null;
+        Date date2 = null;
+        try {
+            date1 = sdf.parse(date1str);
+            date2 = sdf.parse(date2str);
+        } catch (ParseException pe) {
+            System.out.println("ParseException caught: "+pe.getMessage());
+            return null;
+        } catch (NumberFormatException nfe) {
+            System.out.println("ParseException caught: "+nfe.getMessage());
+            return null;
+        }
 
-    @RequestMapping(value = "/find/{title}", method = GET, produces = "application/json")
-    public List<Lesson> getByTitle(@PathVariable String title) {
-        List<Lesson> lessons = repository.findByTitle(title);
-        System.out.println("lessons="+lessons);
-        return lessons;
-    }
-
-    @RequestMapping(value = "/between?{date1}&{date2}", method = GET, produces = "application/json")
-    public List<Lesson> getBetween(@PathVariable Date date1, @PathVariable Date date2) throws Exception {
-//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-M-dd");
-//        long date1 = 0;
-//        long date2 = 0;
-//        try {
-//            date1 = sdf.parse(date1str).getTime();
-//            date2 = sdf.parse(date2str).getTime();
-//        } catch (ParseException pe) {
-//            System.out.println("ParseException caught: "+pe.getMessage());
-//            return null;
-//        } catch (NumberFormatException nfe) {
-//            System.out.println("ParseException caught: "+nfe.getMessage());
-//            return null;
-//        }
-        List<Lesson> lessons = null;
-        lessons = repository.findByDeliveredOnBetween(date1,date2);
+        System.out.println("calling repository.findAllDeliveredOnBetween with date1="+date1+" and date2="+date2);
+        List<Lesson> lessons = this.repository.findAllDeliveredOnBetween(date1,date2).orElse(new ArrayList<Lesson>());
         System.out.println("lessons="+lessons);
         return lessons;
     }
@@ -113,8 +97,38 @@ public class LessonsController {
 
     @RequestMapping(value = "/count", method = GET, produces = "application/json")
     public long getCount() {
+        System.out.println("in getCount");
         return this.repository.count();
     }
+
+    @RequestMapping(value = "", method = GET, produces = "application/json")
+    public Iterable<Lesson> all() {
+        System.out.println("in GET /lessons");
+        return this.repository.findAll();
+    }
+
+    @RequestMapping(value = "/find/{title}", method = GET, produces = "application/json")
+    public List<Lesson> getByTitle(@PathVariable String title) {
+        List<Lesson> lessons = repository.findByTitle(title).orElse(null);
+        System.out.println("lessons="+lessons);
+        return lessons;
+    }
+
+//    @RequestMapping(value = "/5", method = GET, produces = "application/json")
+//    public Optional<Lesson> get5() {
+//        System.out.println("in GET /lessons/5");
+//        return this.repository.findById(5L);
+//    }
+
+//    @RequestMapping(value = "/{id}", method = GET, produces = "application/json")
+//    public Lesson getById(@PathVariable long id) {
+//        Lesson lesson = new Lesson();
+//        lesson.setId(id);
+//        lesson.setTitle("JPL");
+//        lesson.setDeliveredOn(Calendar.getInstance().getTime());
+//        return this.repository.save(lesson);
+//    }
+
 }
 
 /*
