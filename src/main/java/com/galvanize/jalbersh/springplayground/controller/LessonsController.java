@@ -87,7 +87,8 @@ public class LessonsController {
 //            System.out.println("ParseException caught: "+nfe.getMessage());
 //            return null;
 //        }
-        List<Lesson> lessons = repository.findByDeliveredOnBetween(date1,date2);
+        List<Lesson> lessons = null;
+        lessons = repository.findByDeliveredOnBetween(date1,date2);
         System.out.println("lessons="+lessons);
         return lessons;
     }

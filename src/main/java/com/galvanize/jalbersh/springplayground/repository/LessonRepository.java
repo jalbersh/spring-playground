@@ -9,6 +9,6 @@ import java.util.List;
 
 public interface LessonRepository extends CrudRepository<Lesson, Long> {
     public List<Lesson> findByTitle(String title);
-    public List<Lesson> findByDeliveredOnBetween(LocalDateTime date1, LocalDateTime date2);
+    public List<Lesson> findByDeliveredOnBetween(Date date1, Date date2);
 }
 

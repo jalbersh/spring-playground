@@ -163,9 +163,8 @@ public class LessonsControllerTest {
         MockHttpServletRequestBuilder request = get("/lessons/between?"+date1+"&"+date2);
 
         this.mvc.perform(request)
-                .andExpect(status().isOk());
-//                .andExpect(jsonPath("$.data.lessons").isArray()) // works
-//                .andExpect((jsonPath("$.data.lessons", Matchers.contains("Another Lesson to find"))));
-//                .andExpect("$.data.lessons[?(@=='%s')]", lesson.getTitle()).exists());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.lessons").isArray())
+                .andExpect((jsonPath("$.data.lessons", Matchers.contains("Another Lesson to date"))));
     }
 }
