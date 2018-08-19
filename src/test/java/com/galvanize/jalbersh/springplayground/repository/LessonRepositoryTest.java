@@ -43,7 +43,7 @@ public class LessonRepositoryTest {
         Date date = cal.getTime();
         lesson.setDeliveredOn(date);
         repository.save(lesson);
-        List<Lesson> lessons = repository.findByTitle("SQL").orElse(new ArrayList<Lesson>());
+        List<Lesson> lessons = repository.findByTitle("SQL");
         assertThat(lessons.isEmpty(),not(true));
         System.out.println("got lessons="+lessons);
         assertThat(lessons.isEmpty(), not(true));
@@ -71,7 +71,7 @@ public class LessonRepositoryTest {
         lesson.setDeliveredOn(date);
         repository.save(lesson);
 
-        List<Lesson> lessons = repository.findAllDeliveredOnBetween(date1,date2).orElse(new ArrayList<Lesson>());
+        List<Lesson> lessons = repository.findAllDeliveredOnBetween(date1,date2);
         assertThat(lessons.isEmpty(),not(true));
         assertThat(lessons.isEmpty(), not(true));
         assertThat(lessons.size(), greaterThan(0));

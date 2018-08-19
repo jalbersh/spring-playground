@@ -1,5 +1,7 @@
 package com.galvanize.jalbersh.springplayground.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.galvanize.jalbersh.springplayground.model.Lesson;
 import com.galvanize.jalbersh.springplayground.repository.LessonRepository;
 import org.hamcrest.Matchers;
@@ -14,6 +16,7 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -23,12 +26,14 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import static java.util.stream.Collectors.toList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNot.not;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -136,17 +141,24 @@ public class LessonsControllerTest {
 
         MockHttpServletRequestBuilder request = get("/lessons/find/"+savedLesson.getTitle());
 
-        this.mvc.perform(request)
-                .andExpect(status().isOk());
-//                .andExpect(jsonPath("$.data.lessons").isArray()); // works
-//                .andExpect((jsonPath("$.data.lessons", Matchers.contains("Another Lesson to find"))));
-//                .andExpect("$.data.lessons[?(@=='%s')]", lesson.getTitle()).exists());
+        MvcResult result = this.mvc.perform(request)
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andReturn();
+        String content = result.getResponse().getContentAsString();
+        System.out.println("content="+content);
+        ObjectMapper mapper = new ObjectMapper();
+        List<Lesson> contentLessons = mapper.readValue(content,new TypeReference<List<Lesson>>(){});
+        assertThat(contentLessons.isEmpty(), not(true));
+        assertThat(contentLessons.size(), greaterThan(0));
+        List<Lesson> onlyOurLesson = contentLessons.stream().filter(l -> l.getTitle().equals("Another Lesson to find")).collect(toList());
+        assertThat(onlyOurLesson.isEmpty(), not(true));
     }
 
     @Test
     @Transactional
     @Rollback
-    public void testFindBetweenUsingController() throws Exception {
+    public void testFindBetweenUsingRepository() throws Exception {
         Lesson lesson1 = new Lesson();
         lesson1.setTitle("Another Lesson with date1");
         Calendar cal1 = Calendar.getInstance();
@@ -162,18 +174,24 @@ public class LessonsControllerTest {
         lesson2.setDeliveredOn(date2);
         Lesson savedLesson2 = repository.save(lesson2);
 
-        List<Lesson> ls = repository.findByTitle("Another Lesson with date1").orElse(new ArrayList<Lesson>());
+        List<Lesson> ls = repository.findByTitle("Another Lesson with date1");
         assertThat(ls.isEmpty(), not(true));
         assertThat(ls.get(0).getDeliveredOn(), equalTo(date1));
         System.out.println("date1="+date1);
+        System.out.println("count="+repository.count());
         assertThat(repository.count(),greaterThan(1L));
 
-        List<Lesson> lessons = lessonsController.getBetween("2018-06-01", "2018-06-20");
+        cal1.set(2018,6,1);
+        date1 = cal1.getTime();
+        cal2.set(2018,6,20);
+        date2 = cal2.getTime();
+
+        List<Lesson> lessons = repository.findAllDeliveredOnBetween(date1,date2);
         System.out.println("lessons from getBetween="+lessons);
-//        assertThat(lessons.isEmpty(), not(true));
-//        assertThat(lessons.size(), equalTo(2));
-//        assertThat(lessons.contains(savedLesson1), equalTo(true));
-//        assertThat(lessons.contains(savedLesson2), equalTo(true));
+        assertThat(lessons.isEmpty(), not(true));
+        assertThat(lessons.size(), equalTo(2));
+        assertThat(lessons.contains(savedLesson1), equalTo(true));
+        assertThat(lessons.contains(savedLesson2), equalTo(true));
     }
 
     @Test
@@ -195,13 +213,22 @@ public class LessonsControllerTest {
         lesson2.setDeliveredOn(date2);
         Lesson savedLesson2 = repository.save(lesson2);
 
-        MockHttpServletRequestBuilder request = get("/lessons/between?date1=2017-06-01&date2=2017-06-20")
+        MockHttpServletRequestBuilder request = get("/lessons/between?date1=2018-06-01&date2=2018-06-20")
                 .contentType(MediaType.APPLICATION_JSON);
-//                .accept(MediaType.ALL)
-//                .headers(RequestMethod.GET)
-        this.mvc.perform(request)
-                .andExpect(status().isOk());
-//                .andExpect(jsonPath("$.data.lessons").isArray())
-//                .andExpect((jsonPath("$.data.lessons", Matchers.contains("Another Lesson to date"))));
+        MvcResult result = this.mvc.perform(request)
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andReturn();
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$.lessons").isArray())
+//                .andExpect((jsonPath("$.lessons", Matchers.contains("Another Lesson to date1"))));
+        String content = result.getResponse().getContentAsString();
+        System.out.println("content="+content);
+//        ObjectMapper mapper = new ObjectMapper();
+//        List<Lesson> contentLessons = mapper.readValue(content,new TypeReference<List<Lesson>>(){});
+//        assertThat(contentLessons.isEmpty(), not(true));
+//        assertThat(contentLessons.size(), greaterThan(0));
+//        List<Lesson> onlyOurLesson = contentLessons.stream().filter(l -> l.getTitle().equals("Another Lesson with date2")).collect(toList());
+//        assertThat(onlyOurLesson.isEmpty(), not(true));
     }
 }

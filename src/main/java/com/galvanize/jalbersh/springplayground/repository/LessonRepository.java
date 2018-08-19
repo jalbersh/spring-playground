@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface LessonRepository extends CrudRepository<Lesson, Long> {
-    public Optional<List<Lesson>> findByTitle(String title);
+    public List<Lesson> findByTitle(String title);
     @Query("select l FROM Lesson l where l.deliveredOn >= :date1 AND l.deliveredOn <= :date2")
-    public Optional<List<Lesson>> findAllDeliveredOnBetween(@Param("date1") Date date1, @Param("date2") Date date2);
+    public List<Lesson> findAllDeliveredOnBetween(@Param("date1") Date date1, @Param("date2") Date date2);
 }
 

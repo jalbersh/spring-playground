@@ -4,6 +4,7 @@ import com.galvanize.jalbersh.springplayground.model.Lesson;
 import com.galvanize.jalbersh.springplayground.repository.LessonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityManager;
@@ -53,16 +54,24 @@ public class LessonsController {
         return this.repository.save(lesson);
     }
 
-    @RequestMapping(value = "/between?{date1}&{date2}", method = RequestMethod.GET,
-            consumes = "application/json", produces = "application/json")
-    public List<Lesson> getBetween(@PathVariable String date1str, @PathVariable String date2str) throws Exception {
-        System.out.println("in getBetween: got date1str="+date1str+" and date2str="+date2str);
+    @RequestMapping(value = "/find/{title}", method = GET, produces = "application/json")
+    public List<Lesson> getByTitle(@PathVariable String title) {
+        System.out.println("in getByTitle with "+title);
+        List<Lesson> lessons = repository.findByTitle(title);
+        System.out.println("lessons="+lessons);
+        return lessons;
+    }
+
+    @RequestMapping(value = "/between", method = GET, produces = "application/json")
+    public List<Lesson> getLessonsBetween(@RequestParam(required = true) String date1,
+                                          @RequestParam(required = true) String date2) {
+        System.out.println("in getBetween: got date1str="+date1+" and date2str="+date2);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-M-dd");
-        Date date1 = null;
-        Date date2 = null;
+        Date ddate1 = null;
+        Date ddate2 = null;
         try {
-            date1 = sdf.parse(date1str);
-            date2 = sdf.parse(date2str);
+            ddate1 = sdf.parse(date1);
+           ddate2 = sdf.parse(date2);
         } catch (ParseException pe) {
             System.out.println("ParseException caught: "+pe.getMessage());
             return null;
@@ -72,7 +81,7 @@ public class LessonsController {
         }
 
         System.out.println("calling repository.findAllDeliveredOnBetween with date1="+date1+" and date2="+date2);
-        List<Lesson> lessons = this.repository.findAllDeliveredOnBetween(date1,date2).orElse(new ArrayList<Lesson>());
+        List<Lesson> lessons = this.repository.findAllDeliveredOnBetween(ddate1,ddate2);
         System.out.println("lessons="+lessons);
         return lessons;
     }
@@ -107,27 +116,20 @@ public class LessonsController {
         return this.repository.findAll();
     }
 
-    @RequestMapping(value = "/find/{title}", method = GET, produces = "application/json")
-    public List<Lesson> getByTitle(@PathVariable String title) {
-        List<Lesson> lessons = repository.findByTitle(title).orElse(null);
-        System.out.println("lessons="+lessons);
-        return lessons;
+    @RequestMapping(value = "/5", method = GET, produces = "application/json")
+    public Optional<Lesson> get5() {
+        System.out.println("in GET /lessons/5");
+        return this.repository.findById(5L);
     }
 
-//    @RequestMapping(value = "/5", method = GET, produces = "application/json")
-//    public Optional<Lesson> get5() {
-//        System.out.println("in GET /lessons/5");
-//        return this.repository.findById(5L);
-//    }
-
-//    @RequestMapping(value = "/{id}", method = GET, produces = "application/json")
-//    public Lesson getById(@PathVariable long id) {
-//        Lesson lesson = new Lesson();
-//        lesson.setId(id);
-//        lesson.setTitle("JPL");
-//        lesson.setDeliveredOn(Calendar.getInstance().getTime());
-//        return this.repository.save(lesson);
-//    }
+    @RequestMapping(value = "/{id}", method = GET, produces = "application/json")
+    public Lesson getById(@PathVariable long id) {
+        Lesson lesson = new Lesson();
+        lesson.setId(id);
+        lesson.setTitle("JPL");
+        lesson.setDeliveredOn(Calendar.getInstance().getTime());
+        return this.repository.save(lesson);
+    }
 
 }
 
