@@ -11,5 +11,7 @@
 
     <bean id="ms" class="com.galvanize.jalbersh.springplayground.service.MathService">
     </bean>
+    <bean id="ts" class="com.galvanize.jalbersh.springplayground.service.TicketService">
+    </bean>
 
 </beans>
