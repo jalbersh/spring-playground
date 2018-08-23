@@ -32,4 +32,12 @@ public class WordCounterTest {
         assertThat(words.size(), equalTo(7));
         assertThat(words.get("brown"), equalTo(2));
     }
+
+    @Test
+    public void testWordCountWithPunctuation() throws Exception {
+        String sentence = "how now, how now";
+        Map<String,Integer> words = ws.count(sentence);
+        assertThat(words.size(), equalTo(2));
+        assertThat(words.get("how"), equalTo(2));
+    }
 }
