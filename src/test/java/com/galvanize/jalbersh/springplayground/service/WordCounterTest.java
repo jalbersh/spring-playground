@@ -18,17 +18,17 @@ import static org.hamcrest.Matchers.not;
 @WebMvcTest(WordCounter.class)
 public class WordCounterTest {
     @MockBean
-    WordCounter ws;
+    WordCounter wc;
 
     @Before
     public void setup() throws Exception {
-        ws = new WordCounter();
+        wc = new WordCounter();
     }
 
     @Test
     public void testWordCount() throws Exception {
         String sentence = "A brown cow jumps over a brown fox";
-        Map<String,Integer> words = ws.count(sentence);
+        Map<String,Integer> words = wc.count(sentence);
         assertThat(words.size(), equalTo(7));
         assertThat(words.get("brown"), equalTo(2));
     }
@@ -36,7 +36,7 @@ public class WordCounterTest {
     @Test
     public void testWordCountWithPunctuation() throws Exception {
         String sentence = "how now, how now";
-        Map<String,Integer> words = ws.count(sentence);
+        Map<String,Integer> words = wc.count(sentence);
         assertThat(words.size(), equalTo(2));
         assertThat(words.get("how"), equalTo(2));
     }
