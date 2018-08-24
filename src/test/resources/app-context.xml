@@ -13,7 +13,6 @@
     </bean>
     <bean id="ts" class="com.galvanize.jalbersh.springplayground.service.TicketService">
     </bean>
-    <bean id="count" class="com.galvanize.jalbersh.springplayground.service.WordCounter">
+    <bean id="repository" class="com.galvanize.jalbersh.springplayground.repository.LessonRepository">
     </bean>
-
 </beans>

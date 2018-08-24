@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -52,30 +53,30 @@ public class WordCounterControllerTest {
         String expectedCount = "{ \"how\": 2, \"now\": 2 }";
         ObjectMapper mapper = new ObjectMapper();
         Map<String,Integer> expectedCounts = mapper.readValue(expectedCount,new TypeReference<Map<String, Integer>>(){});
-        controller = new WordCounterController(count);
+        WordCount wc = new WordCount("how",2);
         when(count.count(anyString())).thenReturn(expectedCounts);
+        controller = new WordCounterController(count);
     }
 
     @Test
     public void testWordCounterEndpoint() throws Exception {
         String sentence="how now, how now";
         MockHttpServletRequestBuilder request = post("/words/count")
-                .accept(MediaType.TEXT_PLAIN)
-                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.TEXT_PLAIN)
                 .content(sentence);
-        this.mvc.perform(request)
-                .andExpect(status().isOk());
-//        MvcResult result = this.mvc.perform(request)
-//                .andExpect(status().isOk())
-//                .andDo(print())
-//                .andReturn();
-//        String content = result.getResponse().getContentAsString();
-//        System.out.println("content="+content);
-//        ObjectMapper mapper = new ObjectMapper();
-//        List<WordCount> counts = mapper.readValue(content,new TypeReference<List<WordCount>>(){});
-//        assertThat(counts.size(), greaterThan(0));
-//        WordCount wc = counts.get(0);
-//        assertThat(wc.getWord(), equalTo("how"));
-//        assertThat(wc.getCount(), equalTo(2));
+//        this.mvc.perform(request)
+//                .andExpect(status().isOk());
+        MvcResult result = this.mvc.perform(request)
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andReturn();
+        String content = result.getResponse().getContentAsString();
+        System.out.println("content="+content);
+        ObjectMapper mapper = new ObjectMapper();
+        Map<String,Integer> counts = mapper.readValue(content,new TypeReference<Map<String,Integer>>(){});
+        assertThat(counts.size(), equalTo(2));
+        assertThat(counts.get("how"), equalTo(2));
+        assertThat(counts.get("now"), equalTo(2));
     }
 }

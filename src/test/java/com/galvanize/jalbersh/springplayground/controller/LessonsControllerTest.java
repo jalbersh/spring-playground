@@ -53,7 +53,7 @@ public class LessonsControllerTest {
 
     @Before
     public void setup() throws Exception {
-        lessonsController = new LessonsController((repository));
+        lessonsController = new LessonsController(repository);
         Lesson lesson = new Lesson();
         lesson.setId(5L);
         lesson.setTitle("JPL");
