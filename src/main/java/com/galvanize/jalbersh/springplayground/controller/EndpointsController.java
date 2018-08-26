@@ -2,7 +2,6 @@ package com.galvanize.jalbersh.springplayground.controller;
 
 import com.galvanize.jalbersh.springplayground.model.Flight;
 import com.galvanize.jalbersh.springplayground.model.OperationData;
-import com.galvanize.jalbersh.springplayground.model.OperationDataBuilder;
 import com.galvanize.jalbersh.springplayground.model.Ticket;
 import com.galvanize.jalbersh.springplayground.service.MathService;
 import com.galvanize.jalbersh.springplayground.service.TicketService;
@@ -11,12 +10,10 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.List;
+import java.util.Map;
 
 import static com.galvanize.jalbersh.springplayground.model.OperationDataBuilder.operationDataBuilder;
-import static java.util.Arrays.asList;
-import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
@@ -27,6 +24,11 @@ public class EndpointsController {
 
     @Autowired
     private TicketService ts;
+
+    public EndpointsController(MathService ms, TicketService ts) {
+        this.ms = ms;
+        this.ts = ts;
+    }
 
     @GetMapping("/math/tasks")
     public String getTasks() {

@@ -3,33 +3,24 @@ package com.galvanize.jalbersh.springplayground.controller;
 import com.galvanize.jalbersh.springplayground.model.Lesson;
 import com.galvanize.jalbersh.springplayground.repository.LessonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TemporalType;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
-
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
-import static java.util.stream.Collectors.toList;
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @RestController
 @RequestMapping("/lessons")
 public class LessonsController {
 
+    @Autowired
     private final LessonRepository repository;
 
-    @Autowired
     public LessonsController(LessonRepository repository) {
         this.repository = repository;
     }

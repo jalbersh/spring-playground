@@ -1,23 +1,15 @@
 package com.galvanize.jalbersh.springplayground.controller;
 
-import com.fasterxml.classmate.util.ResolvedTypeCache;
-import com.fasterxml.jackson.annotation.JacksonInject;
-import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.galvanize.jalbersh.springplayground.controller.EndpointsController;
-import com.galvanize.jalbersh.springplayground.model.OperationData;
 import com.galvanize.jalbersh.springplayground.model.Passenger;
 import com.galvanize.jalbersh.springplayground.model.Ticket;
 import com.galvanize.jalbersh.springplayground.service.MathService;
 import com.galvanize.jalbersh.springplayground.service.TicketService;
-import org.assertj.core.internal.bytebuddy.matcher.ElementMatcher;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.expression.Operation;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -27,21 +19,13 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.*;
 import java.util.stream.Stream;
 
-import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.is;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.hamcrest.Matchers.equalTo;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(EndpointsController.class)
@@ -61,7 +45,7 @@ public class EndpointsControllerTest {
 
     @Before
     public void setup() throws Exception {
-        ec = new EndpointsController();
+        ec = new EndpointsController(ms,ts);
     }
 
     @Test
