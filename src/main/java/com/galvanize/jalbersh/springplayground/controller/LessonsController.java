@@ -19,7 +19,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
 public class LessonsController {
 
     @Autowired
-    private final LessonRepository repository;
+    private LessonRepository repository;
 
     public LessonsController(LessonRepository repository) {
         this.repository = repository;

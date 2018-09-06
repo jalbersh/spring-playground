@@ -1,12 +1,11 @@
 package com.galvanize.jalbersh.springplayground.service;
 
-import com.galvanize.jalbersh.springplayground.model.OperationData;
-import com.galvanize.jalbersh.springplayground.model.OperationDataBuilder;
 import com.galvanize.jalbersh.springplayground.model.Passenger;
 import com.galvanize.jalbersh.springplayground.model.Ticket;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -16,6 +15,7 @@ import static java.util.Arrays.asList;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(MathService.class)
+@AutoConfigureMockMvc(secure=false)
 public class TicketServiceTest {
     TicketService ts;
 

@@ -4,6 +4,7 @@ import com.galvanize.jalbersh.springplayground.config.WordCountConfig;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -17,6 +18,7 @@ import static org.hamcrest.Matchers.equalTo;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(WordCounterService.class)
+@AutoConfigureMockMvc(secure=false)
 public class WordCounterServiceTest {
     WordCounterService wc;
 
