@@ -48,6 +48,7 @@ public class EndpointsControllerTest {
     @Before
     public void setup() throws Exception {
         ec = new EndpointsController(ms,ts);
+
     }
 
     @Test

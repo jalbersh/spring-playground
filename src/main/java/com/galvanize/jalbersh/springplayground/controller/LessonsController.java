@@ -21,6 +21,15 @@ public class LessonsController {
     @Autowired
     private LessonRepository repository;
 
+    public LessonRepository getRepository() {
+        return repository;
+    }
+
+    public void setRepository(LessonRepository repository) {
+        this.repository = repository;
+    }
+
+    @Autowired
     public LessonsController(LessonRepository repository) {
         this.repository = repository;
     }
