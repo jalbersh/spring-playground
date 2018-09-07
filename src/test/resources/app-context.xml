@@ -13,6 +13,5 @@
     </bean>
     <bean id="ts" class="com.galvanize.jalbersh.springplayground.service.TicketService">
     </bean>
-    <bean id="lessonsController" class="com.galvanize.jalbersh.springplayground.controller.LessonsController">
-    </bean>
+
 </beans>

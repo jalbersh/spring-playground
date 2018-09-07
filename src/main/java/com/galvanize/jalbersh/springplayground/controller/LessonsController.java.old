@@ -29,7 +29,6 @@ public class LessonsController {
         this.repository = repository;
     }
 
-    @Autowired
     public LessonsController(LessonRepository repository) {
         this.repository = repository;
     }

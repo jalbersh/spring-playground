@@ -25,6 +25,7 @@ public class EndpointsController {
     @Autowired
     private TicketService ts;
 
+    @Autowired
     public EndpointsController(MathService ms, TicketService ts) {
         this.ms = ms;
         this.ts = ts;

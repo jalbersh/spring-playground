@@ -261,15 +261,5 @@ public class EndpointsControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string("result: 540.0"));
     }
-
-    @Test
-    public void testObjectParams() throws Exception {
-        MockHttpServletRequestBuilder request = post("/jr/object-example")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"q\": \"other\", \"from\": \"2010\"}");
-
-        this.mvc.perform(request)
-                .andExpect(status().isOk())
-                .andExpect(content().string("Search: q=something from=2008"));
-    }
+    
 }
