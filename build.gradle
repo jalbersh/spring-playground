@@ -35,4 +35,5 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-starter-actuator')
 	compile('org.springframework.boot:spring-boot-starter-security')
 	testCompile('org.springframework.security:spring-security-test')
+	compile('org.projectlombok:lombok:1.16.20')
 }

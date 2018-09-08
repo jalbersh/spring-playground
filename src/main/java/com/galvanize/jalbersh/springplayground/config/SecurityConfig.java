@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 
 @Configuration
 @EnableWebSecurity
+@SuppressWarnings("deprecation")
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
@@ -20,6 +21,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.httpBasic();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.authorizeRequests().mvcMatchers("/flights/**", "/math/**").permitAll();
+        http.authorizeRequests().mvcMatchers("/admin/employees").access("hasRole('ADMIN')");
+        http.authorizeRequests().mvcMatchers("/employees").access("hasAnyRole('EMPLOYEE','ADMIN')");
         http.authorizeRequests().anyRequest().authenticated();
     }
 
@@ -30,6 +33,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .passwordEncoder(NoOpPasswordEncoder.getInstance())
                 .withUser("employee").password("my-employee-password").roles("EMPLOYEE")
                 .and()
-                .withUser("boss").password("my-boss-password").roles("MANAGER");
+                .withUser("boss").password("my-boss-password").roles("ADMIN");
     }
 }
