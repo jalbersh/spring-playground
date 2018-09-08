@@ -6,7 +6,7 @@ import com.galvanize.jalbersh.springplayground.config.SecurityConfig;
 import com.galvanize.jalbersh.springplayground.model.Employee;
 import com.galvanize.jalbersh.springplayground.model.Views;
 import com.galvanize.jalbersh.springplayground.repository.EmployeeRepository;
-import com.galvanize.jalbersh.springplayground.service.EmployeeService;
+import com.galvanize.jalbersh.springplayground.service.EmployeeDetailsService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,7 +45,7 @@ public class EmployeesControllerTest {
     EmployeeRepository repository;
 
     @MockBean
-    private EmployeeService service;
+    private EmployeeDetailsService service;
 
     private EmployeesController employeesController;
 
@@ -160,6 +160,6 @@ public class EmployeesControllerTest {
         this.mvc
                 .perform(get("/admin/employees").header(HttpHeaders.AUTHORIZATION,
                         "Basic " + Base64Utils.encodeToString("employee:my-employee-password".getBytes())))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isUnauthorized());
     }
 }

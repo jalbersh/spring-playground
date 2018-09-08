@@ -4,8 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.galvanize.jalbersh.springplayground.model.Employee;
 import com.galvanize.jalbersh.springplayground.model.Views;
-import com.galvanize.jalbersh.springplayground.service.EmployeeService;
+import com.galvanize.jalbersh.springplayground.service.EmployeeDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,10 +15,10 @@ import java.util.List;
 @RestController
 public class EmployeesController {
 
-    private EmployeeService es;
-
     @Autowired
-    public EmployeesController(EmployeeService es) {
+    private EmployeeDetailsService es;
+
+    public EmployeesController(EmployeeDetailsService es) {
         this.es = es;
     }
 
@@ -55,4 +56,8 @@ public class EmployeesController {
             return "";
         }
     }
-}
+
+    @GetMapping("/me")
+    public Employee getMe(@AuthenticationPrincipal Employee employee) {
+        return employee;
+    }}
