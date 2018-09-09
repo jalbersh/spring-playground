@@ -160,6 +160,6 @@ public class EmployeesControllerTest {
         this.mvc
                 .perform(get("/admin/employees").header(HttpHeaders.AUTHORIZATION,
                         "Basic " + Base64Utils.encodeToString("employee:my-employee-password".getBytes())))
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isForbidden());
     }
 }
